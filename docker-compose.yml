@@ -1,0 +1,22 @@
+services:
+  server:
+    build: .
+    container_name: express-proxy
+    restart: always
+    environment:
+      - PORT=${PORT}
+      - TARGET_URL=${TARGET_URL}
+      - DOMAIN_NAME=${DOMAIN_NAME}
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-proxy
+    restart: always
+    volumes:
+      - ./nginx.conf.template:/etc/nginx/templates/default.conf.template:ro
+    ports:
+      - "80:80"
+    environment:
+      - DOMAIN_NAME=${DOMAIN_NAME}
+    depends_on:
+      - server
